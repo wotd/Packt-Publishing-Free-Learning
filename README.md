@@ -1,6 +1,7 @@
 # FreeLearningPacktPublishing_UsefulScripts
 
-##grabPacktFreeBook.py - script that automatically grabs a daily free eBook from https://www.packtpub.com/packt/offers/free-learning
+#grabPacktFreeBook.py 
+[script that automatically grabs a daily free eBook from](https://www.packtpub.com/packt/offers/free-learning)
 
 ### Requirements
 * Install Python 3.x
@@ -10,14 +11,12 @@
 * run:                       pip install requests
 * change your login credentials in #loginData.cfg file
   
-  
-
 ### Usage
 * you can manually run #grabPacktFreeBook.py script to get the book
-* ##LINUX:
+* LINUX:
   #chmod a+x grabPacktFreeBook.py 
   Cron setup:
   #0 12 * * * cd /home/GrabBookCatalog/ && /usr/bin/python grabPacktFreeBook.py > /tmp/packt_free_ebook.log>&1
   All paths must be correct!
-* ##WINDOWS:
+* WINDOWS:
   
