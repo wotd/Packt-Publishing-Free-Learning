@@ -1,25 +1,47 @@
-## FreeLearningPacktPublishing_UsefulScripts
+## Free Learning PacktPublishing scripts
 
-# grabPacktFreeBook.py 
-script that automatically grabs a daily free eBook from https://www.packtpub.com/packt/offers/free-learning
+**grabPacktFreeBook.py** - script that automatically grabs a daily free eBook from https://www.packtpub.com/packt/offers/free-learning
 
-### Requirements
+**downloadPacktFreeBooks.py** - script which downloads already claimed eBooks from your account "https://www.packtpub.com/account/my-ebooks"
+
+### Requirements:
 * Install Python 3.x
-* Install pip (if you don't have it yet)
-  to install pip, download:  https://bootstrap.pypa.io/get-pip.py 
-  then run the following:    python get-pip.py
-* run:                       pip install requests
-* change your login credentials in loginData.cfg file
+* Install pip (if you have not it installed yet)
+  To install pip, download:  https://bootstrap.pypa.io/get-pip.py ,
+  then run the following commands:
+  ```  
+  python get-pip.py
+  pip install requests
+  pip install beautifulsoup4
+  ```
+* change your login credentials in **loginData.cfg** file
   
-### Usage
-* you can manually run grabPacktFreeBook.py script to get the book
-* LINUX:
-  * modify access permissions of the script:  
-   ```sh
-    chmod a+x grabPacktFreeBook.py 
-    ```
-  * Cron setup (All paths must be set correctly!):
+### Usage:
+**[grabPacktFreeBook.py]**
+* You can manually run grabPacktFreeBook.py script to get the book
+  ```sh
+  $ python grabPacktFreeBook.py
   ```
-    0 12 * * * cd /home/GrabBookCatalog/ && /usr/bin/python grabPacktFreeBook.py >/tmp/packt_free_ebook.log>&1
+* Or set it to be invoked automatically:  
+  **LINUX**:
+  modify access permissions of the script:  
+  ```sh
+  $ chmod a+x grabPacktFreeBook.py 
   ```
-* WINDOWS:
+  CRON setup (more: https://help.ubuntu.com/community/CronHowto) :
+  ```sh
+  $ sudo crontab -e
+  ```
+  paste (modify all paths correctly according to your setup):
+  ```
+  0 12 * * * cd /home/me/Desktop/PacktScripts/ && /usr/bin/python3 grabPacktFreeBook.py > /home/me/Desktop/PacktScripts/grabPacktFreeBook.log 2>&1
+  ```
+  and save the crontab file. To verify if CRON fires up the script correctly, run a command:
+  ```sh
+  $ sudo grep CRON /var/log/syslog
+  ```
+  **WINDOWS**:
+
+
+
+**[downloadPacktFreeBooks.py]**

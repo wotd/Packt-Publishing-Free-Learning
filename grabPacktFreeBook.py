@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+
+__author__ = "Lukasz Uszko"
+__copyright__ = "Copyright 2015"
+__license__ = "MIT"
+__version__ = "0.0.1"
+__email__ = "lukasz.uszko@gmail.com"
+
 import requests
 import os
 import sys
@@ -62,7 +69,7 @@ if __name__ == '__main__':
     '''connection parameters'''
     config =configparser.ConfigParser()
     try:
-        if(not config.read("loginData.cfg")):
+        if(not config.read("loginDataMine.cfg")):
             raise configparser.Error('loginData.cfg file not found')
         email= config.get("LOGIN_DATA",'email')
         password= config.get("LOGIN_DATA",'password')
@@ -84,17 +91,11 @@ if __name__ == '__main__':
     except requests.exceptions.RequestException as exception:
         print("[ERROR] - Exception occured %s "%exception )
         sys.exit(1)
-    #print(r.status_code)
-    #print(r.encoding)
-    #import codecs
-    #encodedContent = codecs.encode(str(r.content), encoding=r.encoding)
-    #print(encodedContent) 
     strContent= str(r.content)
     htmlParser=PacktFreeBookHtmlParser()
     try:
         htmlParser.feed(strContent)
         r = requests.get(packtpubUrl+htmlParser.getClaimUrl(),timeout=10)
-        #print(r.status_code)
     except TypeError as typeError:
         print("[ERROR] - Type error occured %s "%typeError )
         sys.exit(1)
@@ -107,9 +108,7 @@ if __name__ == '__main__':
         session = requests.Session()
         try:
             rPost = session.post(freeLearningUrl, headers=reqHeaders,data=formData)
-            if(rPost.status_code is 200):
-                print("Logged succesfully!")
-            else:
+            if(rPost.status_code is not 200):
                 raise requests.exceptions.RequestException("login failed! ")               
             r = session.get(packtpubUrl+htmlParser.getClaimUrl(),timeout=10)
         except requests.exceptions.RequestException as exception:
@@ -119,4 +118,3 @@ if __name__ == '__main__':
         print("[SUCCESS] - eBook: '" + htmlParser.bookTitle +"' has been succesfully grabbed !")
     else:
         print("[ERROR] - eBook: '" + htmlParser.bookTitle +"' has not been grabbed, respCode: "+str(r.status_code))
-    input("Press a button to exit...")
