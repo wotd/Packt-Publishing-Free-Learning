@@ -3,7 +3,7 @@
 __author__ = "Lukasz Uszko"
 __copyright__ = "Copyright 2015"
 __license__ = "MIT"
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 __email__ = "lukasz.uszko@gmail.com"
 
 import requests
@@ -19,14 +19,11 @@ class MyPacktPublishingBooksDownloader(object):
     
     def __init__(self,session=None):
     
-        #for codec in ['latin_1', 'utf_8', 'utf_16','ascii']:
-        #    print(codec, 'Łószczykięwicz'.encode(codec,errors='ignore'), sep='\t')
-        #    print('Łószcz')
-        #sys.exit(1)
         self.packtPubUrl= "https://www.packtpub.com"
         self.myBooksUrl= "https://www.packtpub.com/account/my-ebooks"
         self.loginUrl= "https://www.packtpub.com/register"
-        self.myPacktEmail, self.myPacktPassword,self.downloadFolderPath= self.getLoginData("loginDataMine.cfg")
+        self.myPacktEmail, self.myPacktPassword= self.getLoginData("configFile.cfg")
+        self.downloadFolderPath,self.downloadFormats,self.downloadBookTitles= self.getDownloadData("configFile.cfg")
         self.session= session
         if self.session is None:
             self.createSession()
@@ -37,13 +34,32 @@ class MyPacktPublishingBooksDownloader(object):
         config =configparser.ConfigParser()
         try:
             if(not config.read(cfgFilePath)):
-                raise configparser.Error('loginData.cfg file not found')
+                raise configparser.Error(cfgFilePath+ ' file not found')
             email= config.get("LOGIN_DATA",'email')
             password= config.get("LOGIN_DATA",'password')
-            downloadPath= config.get("LOGIN_DATA",'downloadFolderPath')
-            return (email,password,downloadPath)
+            return (email,password)
         except configparser.Error as e:
-            print("[ERROR] loginData.cfg file incorrect or doesn't exist! : "+str(e))
+            print("[ERROR] "+cfgFilePath+ " file incorrect or doesn't exist! : "+str(e))
+            sys.exit(1)
+            
+    def getDownloadData(self, cfgFilePath):
+        config =configparser.ConfigParser()
+        try:
+            if(not config.read(cfgFilePath)):
+                raise configparser.Error(cfgFilePath+ ' file not found')
+            downloadPath= config.get("DOWNLOAD_DATA",'downloadFolderPath')
+            downloadFormats= tuple(format.replace(' ', '') for format in config.get("DOWNLOAD_DATA",'downloadFormats').split(','))
+            downloadBookTitles= None
+            try:
+                downloadBookTitles= [title.strip(' ') for title in config.get("DOWNLOAD_DATA",'downloadBookTitles').split(',')]
+                if len(downloadBookTitles)is 0:
+                    downloadBookTitles= None
+                print(downloadBookTitles)
+            except configparser.Error as e:
+                pass
+            return (downloadPath,downloadFormats,downloadBookTitles)
+        except configparser.Error as e:
+            print("[ERROR] "+cfgFilePath+ " file incorrect or doesn't exist! : "+str(e))
             sys.exit(1)
     
     def createSession(self):
@@ -60,7 +76,6 @@ class MyPacktPublishingBooksDownloader(object):
             r = requests.get(self.loginUrl,timeout=10)
             content = BeautifulSoup(str(r.content), 'html.parser')
             formBuildId = [element['value'] for element in content.find(id='packt-user-login-form').find_all('input',{'name':'form_build_id'})]
-            #print(formBuildId[0] )
             formData['form_build_id']=formBuildId[0]
         except requests.exceptions.RequestException as exception:
             print("[ERROR] - Exception occured %s "%exception )
@@ -82,8 +97,7 @@ class MyPacktPublishingBooksDownloader(object):
                 print("opened  '"+ self.myBooksUrl+"' succesfully!")
             myBooksHtml = BeautifulSoup(r.text, 'html.parser')
             all =  myBooksHtml.find(id='product-account-list').find_all('div', {'class':'product-line unseen'})
-            self.bookData= [ {'title': attr['title'].replace('[eBook]','').rstrip(' '), 'id':attr['nid']}   for attr in all]
-            #print(bookData)
+            self.bookData= [ {'title': attr['title'].replace('[eBook]','').strip(' '), 'id':attr['nid']}   for attr in all]
             for i,div in enumerate(myBooksHtml.find_all('div', {'class':'product-buttons-line toggle'})):
                 downloadUrls= {}
                 for a_href in div.find_all('a'):
@@ -99,9 +113,9 @@ class MyPacktPublishingBooksDownloader(object):
             print("[ERROR] - Exception occured %s "%exception )
             
             
-    def downloadBooks(self,titles=None,formats=None): #titles= ['C# tutorial', 'c++ Tutorial'] ; format=('pdf','mobi','epub','code')
+    def downloadBooks(self,titles=None,formats=None): #titles= list('C# tutorial', 'c++ Tutorial') ; format=tuple('pdf','mobi','epub','code')
         try:
-            #download a book
+            #download ebook
             if formats is None:
                 formats=('pdf','mobi','epub','code')              
             if titles is not None:
@@ -143,5 +157,5 @@ if __name__ == '__main__':
     
     downloader = MyPacktPublishingBooksDownloader()
     downloader.getDataOfAllMyBooks()
-    downloader.downloadBooks(titles=['Unity 4.x Game AI Programming'], formats=("pdf",))
+    downloader.downloadBooks(downloader.downloadBookTitles, downloader.downloadFormats)
     print("--done--")

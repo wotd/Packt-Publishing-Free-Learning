@@ -3,7 +3,7 @@
 __author__ = "Lukasz Uszko"
 __copyright__ = "Copyright 2015"
 __license__ = "MIT"
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 __email__ = "lukasz.uszko@gmail.com"
 
 import requests
@@ -69,10 +69,11 @@ if __name__ == '__main__':
     '''connection parameters'''
     config =configparser.ConfigParser()
     try:
-        if(not config.read("loginDataMine.cfg")):
+        if(not config.read("loginData.cfg")):
             raise configparser.Error('loginData.cfg file not found')
         email= config.get("LOGIN_DATA",'email')
         password= config.get("LOGIN_DATA",'password')
+        downloadBooksAfterClaim= config.get("DOWNLOAD_DATA",'downloadBookAfterClaim')
     except configparser.Error as e:
         print("[ERROR] loginData.cfg file incorrect or doesn't exist! : "+str(e))
         sys.exit(1)
@@ -116,5 +117,11 @@ if __name__ == '__main__':
                 sys.exit(1)
     if(r.status_code is 200):
         print("[SUCCESS] - eBook: '" + htmlParser.bookTitle +"' has been succesfully grabbed !")
+        if downloadBooksAfterClaim=="YES":
+            from packtFreeBookDownloader import MyPacktPublishingBooksDownloader
+            downloader = MyPacktPublishingBooksDownloader(session)
+            downloader.getDataOfAllMyBooks()
+            downloader.downloadBooks([htmlParser.bookTitle], downloader.downloadFormats)
+            
     else:
         print("[ERROR] - eBook: '" + htmlParser.bookTitle +"' has not been grabbed, respCode: "+str(r.status_code))
