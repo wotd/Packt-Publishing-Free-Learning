@@ -69,8 +69,8 @@ if __name__ == '__main__':
     '''connection parameters'''
     config =configparser.ConfigParser()
     try:
-        if(not config.read("loginData.cfg")):
-            raise configparser.Error('loginData.cfg file not found')
+        if(not config.read("configFile.cfg")):
+            raise configparser.Error('config file not found')
         email= config.get("LOGIN_DATA",'email')
         password= config.get("LOGIN_DATA",'password')
         downloadBooksAfterClaim= config.get("DOWNLOAD_DATA",'downloadBookAfterClaim')
