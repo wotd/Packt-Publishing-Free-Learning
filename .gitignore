@@ -1,1 +1,4 @@
 /loginDataMine.cfg
+reschtasks
+/__pycache__/*.pyc
+/configFileMine.cfg
