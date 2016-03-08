@@ -4,6 +4,7 @@
 
 **packtFreeBookDownloader.py** - script which downloads already claimed eBooks from your account https://www.packtpub.com/account/my-ebooks
 
+
 ### Requirements:
 * Install Python 3.x
 * Install pip (if you have not it installed yet)
@@ -17,8 +18,10 @@
   
   pip install beautifulsoup4
   ```
-* change your login credentials in **loginData.cfg** file
+* change your login credentials in **configFile.cfg** file
   
+
+
 ### Usage:
 **[grabPacktFreeBook.py]**
 * You can manually run grabPacktFreeBook.py script to get the book:
