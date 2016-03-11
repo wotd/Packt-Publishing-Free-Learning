@@ -24,6 +24,9 @@ class MyPacktPublishingBooksDownloader(object):
         self.loginUrl= "https://www.packtpub.com/register"
         self.myPacktEmail, self.myPacktPassword= self.getLoginData("configFile.cfg")
         self.downloadFolderPath,self.downloadFormats,self.downloadBookTitles= self.getDownloadData("configFile.cfg")
+        if(not os.path.exists(self.downloadFolderPath)):
+            print("[ERROR] Download folder path: '"+self.downloadFolderPath+ "' doesn't exist" )
+            sys.exit(1)
         self.session= session
         if self.session is None:
             self.createSession()
@@ -129,22 +132,29 @@ class MyPacktPublishingBooksDownloader(object):
                     print(format)
                     if format in tempBookData[i]['downloadUrls'].keys():
                         if format == 'code':
-                            print("downloading code for eBook: '"+tempBookData[i]['title']+ "'...")                           
+                            fileType='zip'
                         else:
-                            print("downloading eBook: '"+tempBookData[i]['title']+"' in '."+format+ "' format...")
-                        r = self.session.get(self.packtPubUrl+tempBookData[i]['downloadUrls'][format],timeout=100)
-                        if(r.status_code is 200):
+                            fileType = format
+                        fullFilePath=os.path.join(self.downloadFolderPath,''.join(list(map(str.capitalize, tempBookData[i]['title'].split(' '))))+'.'+fileType)
+                        if(os.path.isfile(fullFilePath)):
+                            print(fullFilePath+" already exists")
+                            pass
+                        else:
                             if format == 'code':
-                                format='zip'
-                            with open(''.join(list(map(str.capitalize, tempBookData[i]['title'].split(' '))))+'.'+format,'wb') as f:
-                                f.write(r.content)
-                            if format == 'code':
-                                print("[SUCCESS] code for eBook: '"+tempBookData[i]['title']+"' downloaded succesfully!")                           
+                                print("downloading code for eBook: '"+tempBookData[i]['title']+ "'...")                           
                             else:
-                                print("[SUCCESS] eBook: '"+tempBookData[i]['title']+'.'+format+"' downloaded succesfully!")      
-                            nrOfBooksDownloaded=i+1
-                        else:
-                            raise requests.exceptions.RequestException("Cannot download "+tempBookData[i]['title'])                            
+                                print("downloading eBook: '"+tempBookData[i]['title']+"' in '."+format+ "' format...")
+                            r = self.session.get(self.packtPubUrl+tempBookData[i]['downloadUrls'][format],timeout=100)
+                            if(r.status_code is 200):
+                                with open(fullFilePath,'wb') as f:
+                                    f.write(r.content)
+                                if format == 'code':
+                                    print("[SUCCESS] code for eBook: '"+tempBookData[i]['title']+"' downloaded succesfully!")                           
+                                else:
+                                    print("[SUCCESS] eBook: '"+tempBookData[i]['title']+'.'+format+"' downloaded succesfully!")      
+                                nrOfBooksDownloaded=i+1
+                            else:
+                                raise requests.exceptions.RequestException("Cannot download "+tempBookData[i]['title'])                            
             print(str(nrOfBooksDownloaded)+" eBooks have been downloaded !")          
         except requests.exceptions.RequestException as exception:
             print("[ERROR] - Exception occured during GET request%s "%exception )
