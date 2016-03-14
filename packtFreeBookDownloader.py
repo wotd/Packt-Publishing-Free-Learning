@@ -129,13 +129,17 @@ class MyPacktPublishingBooksDownloader(object):
             nrOfBooksDownloaded=0
             for i, book in enumerate(tempBookData):
                 for format in formats:
-                    print(format)
+                    #print(format)
                     if format in tempBookData[i]['downloadUrls'].keys():
                         if format == 'code':
                             fileType='zip'
                         else:
                             fileType = format
-                        fullFilePath=os.path.join(self.downloadFolderPath,''.join(list(map(str.capitalize, tempBookData[i]['title'].split(' '))))+'.'+fileType)
+                        formattedTitle= ''.join(list(map(str.capitalize, tempBookData[i]['title'].split(' '))))
+                        for ch in ['?',':','*']:
+                            if ch in formattedTitle:
+                                formattedTitle=formattedTitle.replace(ch,'_')
+                        fullFilePath=os.path.join(self.downloadFolderPath,formattedTitle+'.'+fileType)
                         if(os.path.isfile(fullFilePath)):
                             print(fullFilePath+" already exists")
                             pass
