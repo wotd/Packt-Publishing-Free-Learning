@@ -7,13 +7,17 @@
 
 ### Requirements:
 * Install Python 3.x
-* Install pip (if you have not it installed yet)
+* Install pip (if you have not installed it yet).
   To install pip, download:  https://bootstrap.pypa.io/get-pip.py ,
-  then run the following commands:
+  then run the following command:
 
   ```  
   python get-pip.py
+  ```
   
+  Once pip has been installed, run the following:
+  
+  ```
   pip install requests
   
   pip install beautifulsoup4

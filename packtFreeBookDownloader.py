@@ -100,7 +100,7 @@ class MyPacktPublishingBooksDownloader(object):
                 print("opened  '"+ self.myBooksUrl+"' succesfully!")
             myBooksHtml = BeautifulSoup(r.text, 'html.parser')
             all =  myBooksHtml.find(id='product-account-list').find_all('div', {'class':'product-line unseen'})
-            self.bookData= [ {'title': attr['title'].replace('[eBook]','').strip(' '), 'id':attr['nid']}   for attr in all]
+            self.bookData= [ {'title': re.sub(r'\s*\[e\w+\]\s*','',attr['title'], flags=re.I ).strip(' '), 'id':attr['nid']}   for attr in all]
             for i,div in enumerate(myBooksHtml.find_all('div', {'class':'product-buttons-line toggle'})):
                 downloadUrls= {}
                 for a_href in div.find_all('a'):
@@ -110,8 +110,7 @@ class MyPacktPublishingBooksDownloader(object):
                            downloadUrls[m.group(4)]= m.group(0)
                         else:
                             downloadUrls['code']= m.group(0)
-                self.bookData[i]['downloadUrls']=downloadUrls
-            #print(self.bookData)      
+                self.bookData[i]['downloadUrls']=downloadUrls 
         except requests.exceptions.RequestException as exception:
             print("[ERROR] - Exception occured %s "%exception )
             
@@ -120,10 +119,9 @@ class MyPacktPublishingBooksDownloader(object):
         try:
             #download ebook
             if formats is None:
-                formats=('pdf','mobi','epub','code')              
+                formats=('pdf','mobi','epub','code')   
             if titles is not None:
                 tempBookData = [data for i,data in enumerate(self.bookData) if any(data['title']==title for title in titles) ]
-                #print(tempBookData )
             else:
                 tempBookData=self.bookData
             nrOfBooksDownloaded=0
