@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import *
+from builtins import str
+from builtins import map
+from builtins import object
 __author__ = "Lukasz Uszko"
 __copyright__ = "Copyright 2015"
 __license__ = "MIT"
@@ -128,7 +138,7 @@ class MyPacktPublishingBooksDownloader(object):
             for i, book in enumerate(tempBookData):
                 for format in formats:
                     #print(format)
-                    if format in tempBookData[i]['downloadUrls'].keys():
+                    if format in list(tempBookData[i]['downloadUrls'].keys()):
                         if format == 'code':
                             fileType='zip'
                         else:
