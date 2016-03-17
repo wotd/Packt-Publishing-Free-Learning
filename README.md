@@ -6,7 +6,7 @@
 
 
 ### Requirements:
-* Install Python 3.x
+* Install either Python 2.x or 3.x
 * Install pip (if you have not installed it yet).
   To install pip, download:  https://bootstrap.pypa.io/get-pip.py ,
   then run the following command:
@@ -21,6 +21,8 @@
   pip install requests
   
   pip install beautifulsoup4
+
+  pip install future
   ```
 * change your login credentials in **configFile.cfg** file
   
