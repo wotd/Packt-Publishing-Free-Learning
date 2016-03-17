@@ -8,11 +8,11 @@ sys.setdefaultencoding('utf8')
 
 PY2 = sys.version_info[0] == 2
 
-__author__ = "Lukasz Uszko"
-__copyright__ = "Copyright 2015"
+__author__ = "Lukasz Uszko, Daniel van Dorp"
+__copyright__ = "Copyright 2016"
 __license__ = "MIT"
 __version__ = "1.0.0"
-__email__ = "lukasz.uszko@gmail.com"
+__email__ = "lukasz.uszko@gmail.com, daniel@vandorp.biz"
 
 if PY2:
     from future import standard_library
