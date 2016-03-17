@@ -1,29 +1,30 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import *
-from builtins import str
+from __future__ import print_function, unicode_literals, division, absolute_import  # We require Python 2.6 or later
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+PY2 = sys.version_info[0] == 2
+
 __author__ = "Lukasz Uszko"
 __copyright__ = "Copyright 2015"
 __license__ = "MIT"
 __version__ = "1.0.0"
 __email__ = "lukasz.uszko@gmail.com"
 
+if PY2:
+    from future import standard_library
+    standard_library.install_aliases()
+    from builtins import *
+    from builtins import str
+
 import requests
 import os
-import sys
 import configparser
 from html.parser import HTMLParser
 from bs4 import BeautifulSoup
-
-import sys  
-reload(sys)  
-sys.setdefaultencoding('utf8')
 
 
 if __name__ == '__main__':
