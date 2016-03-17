@@ -21,6 +21,10 @@ import configparser
 from html.parser import HTMLParser
 from bs4 import BeautifulSoup
 
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 
 if __name__ == '__main__':
     '''connection parameters'''

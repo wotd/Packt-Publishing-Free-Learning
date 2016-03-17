@@ -24,6 +24,10 @@ import re
 from collections import OrderedDict
 from bs4 import BeautifulSoup
 
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 
 class MyPacktPublishingBooksDownloader(object):
     
