@@ -22,8 +22,15 @@
   
   pip install beautifulsoup4
 
-  pip install future
   ```
+  
+  If you use Python 2.x :
+  
+  ```  
+  pip install future
+
+  ```
+  
 * change your login credentials in **configFile.cfg** file
   
 
