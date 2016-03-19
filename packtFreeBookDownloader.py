@@ -1,18 +1,34 @@
 #!/usr/bin/env python
 
-__author__ = "Lukasz Uszko"
-__copyright__ = "Copyright 2015"
+from __future__ import print_function, unicode_literals, division, absolute_import  # We require Python 2.6 or later
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+PY2 = sys.version_info[0] == 2
+
+__author__ = "Lukasz Uszko, Daniel van Dorp"
+__copyright__ = "Copyright 2016"
 __license__ = "MIT"
 __version__ = "1.0.0"
-__email__ = "lukasz.uszko@gmail.com"
+__email__ = "lukasz.uszko@gmail.com, daniel@vandorp.biz"
+
+if PY2:
+    from future import standard_library
+    standard_library.install_aliases()
+    from builtins import *
+    from builtins import str
+    from builtins import map
+    from builtins import object
 
 import requests
 import os
-import sys
 import configparser
 import re
 from collections import OrderedDict
 from bs4 import BeautifulSoup
+
 
 
 class MyPacktPublishingBooksDownloader(object):
@@ -128,7 +144,7 @@ class MyPacktPublishingBooksDownloader(object):
             for i, book in enumerate(tempBookData):
                 for format in formats:
                     #print(format)
-                    if format in tempBookData[i]['downloadUrls'].keys():
+                    if format in list(tempBookData[i]['downloadUrls'].keys()):
                         if format == 'code':
                             fileType='zip'
                         else:
