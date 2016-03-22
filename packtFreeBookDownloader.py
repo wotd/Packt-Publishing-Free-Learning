@@ -9,8 +9,7 @@ __version__ = "1.0.0"
 __email__ = "lukasz.uszko@gmail.com, daniel@vandorp.biz"
 
 import sys
-#reload(sys)
-#sys.setdefaultencoding('utf8')
+
 PY2 = sys.version_info[0] == 2
 if PY2:
     from future import standard_library
@@ -19,6 +18,8 @@ if PY2:
     from builtins import str
     from builtins import map
     from builtins import object
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 
 import requests
 import os
@@ -148,7 +149,7 @@ class MyPacktPublishingBooksDownloader(object):
                         else:
                             fileType = format
                         formattedTitle= ''.join(list(map(str.capitalize, tempBookData[i]['title'].split(' '))))
-                        for ch in ['?',':','*']:
+                        for ch in ['?',':','*','/']:
                             if ch in formattedTitle:
                                 formattedTitle=formattedTitle.replace(ch,'_')
                         fullFilePath=os.path.join(self.downloadFolderPath,formattedTitle+'.'+fileType)
