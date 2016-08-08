@@ -37,6 +37,8 @@ class MyPacktPublishingBooksDownloader(object):
         self.packtPubUrl= "https://www.packtpub.com"
         self.myBooksUrl= "https://www.packtpub.com/account/my-ebooks"
         self.loginUrl= "https://www.packtpub.com/register"
+        self.reqHeaders={'Connection':'keep-alive',
+                    'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'}
         self.myPacktEmail, self.myPacktPassword= self.getLoginData("configFile.cfg")
         self.downloadFolderPath,self.downloadFormats,self.downloadBookTitles= self.getDownloadData("configFile.cfg")
         if(not os.path.exists(self.downloadFolderPath)):
@@ -81,8 +83,6 @@ class MyPacktPublishingBooksDownloader(object):
             sys.exit(1)
     
     def createSession(self):
-        reqHeaders= {'Content-Type':'application/x-www-form-urlencoded',
-                    'Connection':'keep-alive'}
         formData= {'email':self.myPacktEmail,
                 'password':self.myPacktPassword,
                 'op':'Login',
@@ -91,7 +91,7 @@ class MyPacktPublishingBooksDownloader(object):
         try:
             #to get form_build_id
             print("Creates session ...")
-            r = requests.get(self.loginUrl,timeout=10)
+            r = requests.get(self.loginUrl,headers=self.reqHeaders,timeout=10)
             content = BeautifulSoup(str(r.content), 'html.parser')
             formBuildId = [element['value'] for element in content.find(id='packt-user-login-form').find_all('input',{'name':'form_build_id'})]
             formData['form_build_id']=formBuildId[0]
@@ -100,7 +100,7 @@ class MyPacktPublishingBooksDownloader(object):
                 
         try:
             self.session = requests.Session()
-            rPost = self.session.post(self.loginUrl, headers=reqHeaders,data=formData)
+            rPost = self.session.post(self.loginUrl, headers=self.reqHeaders,data=formData)
             if(rPost.status_code is not 200):
                 raise requests.exceptions.RequestException("login failed! ")               
         except requests.exceptions.RequestException as exception:
@@ -110,7 +110,7 @@ class MyPacktPublishingBooksDownloader(object):
     def getDataOfAllMyBooks(self):
         try:
             print("Getting books data ...")
-            r = self.session.get(self.myBooksUrl,timeout=10)
+            r = self.session.get(self.myBooksUrl,headers=self.reqHeaders,timeout=10)
             if(r.status_code is 200):
                 print("opened  '"+ self.myBooksUrl+"' succesfully!")
             myBooksHtml = BeautifulSoup(r.text, 'html.parser')
@@ -161,7 +161,7 @@ class MyPacktPublishingBooksDownloader(object):
                                 print("downloading code for eBook: '"+tempBookData[i]['title']+ "'...")                           
                             else:
                                 print("downloading eBook: '"+tempBookData[i]['title']+"' in '."+format+ "' format...")
-                            r = self.session.get(self.packtPubUrl+tempBookData[i]['downloadUrls'][format],timeout=100)
+                            r = self.session.get(self.packtPubUrl+tempBookData[i]['downloadUrls'][format],headers=self.reqHeaders,timeout=100)
                             if(r.status_code is 200):
                                 with open(fullFilePath,'wb') as f:
                                     f.write(r.content)

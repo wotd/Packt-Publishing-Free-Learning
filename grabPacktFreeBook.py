@@ -40,7 +40,9 @@ if __name__ == '__main__':
     freeLearningUrl= "https://www.packtpub.com/packt/offers/free-learning"
     packtpubUrl= 'https://www.packtpub.com'
     reqHeaders= {'Content-Type':'application/x-www-form-urlencoded',
-             'Connection':'keep-alive'}
+             'Connection':'keep-alive',
+             'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+             }
     formData= {'email':email,
                 'password':password,
                 'op':'Login',
@@ -49,7 +51,7 @@ if __name__ == '__main__':
     print("start grabbing eBook...")
     
     try:
-        r = requests.get(freeLearningUrl,timeout=10)
+        r = requests.get(freeLearningUrl, headers=reqHeaders,timeout=10)
         if(r.status_code is 200):
             html = BeautifulSoup(r.text, 'html.parser')
             loginBuildId= html.find(attrs={'name':'form_build_id'})['id']
@@ -66,7 +68,7 @@ if __name__ == '__main__':
     except requests.exceptions.RequestException as exception:
         print("[ERROR] - Exception occured %s "%exception )
         sys.exit(1)
-
+    
     formData['form_build_id']=loginBuildId
     session = requests.Session()
     
@@ -75,7 +77,7 @@ if __name__ == '__main__':
         if(rPost.status_code is not 200):
             raise requests.exceptions.RequestException("login failed! ")  
         print(packtpubUrl+claimUrl)
-        r = session.get(packtpubUrl+claimUrl,timeout=10)
+        r = session.get(packtpubUrl+claimUrl,headers=reqHeaders,timeout=10)
     except TypeError as typeError:
         print("[ERROR] - Type error occured %s "%typeError )
         sys.exit(1)
